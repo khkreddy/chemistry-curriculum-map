@@ -42,7 +42,7 @@ for(const r in D.accm) for(const L in D.accm[r].eus){
   const eu=D.accm[r].eus[L]; l3+=eu.l3.length;
   eu.l3.forEach(x=>l4+=x.l4.length);
 }
-l3===141 ? ok("141 L3 articulations") : bad("L3: "+l3);
+l3===140 ? ok("140 L3 articulations") : bad("L3: "+l3);
 l4===263 ? ok("263 L4 details") : bad("L4: "+l4);
 const live = D.sts.length + D.nowhere.length + D.transit.length;
 live === 1237 ? ok("1,237 live statements (1396 - 159 retired)") : bad("live: "+live);

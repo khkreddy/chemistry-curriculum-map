@@ -5,7 +5,7 @@
 School chemistry anchored on the ACS Anchoring Concepts Content Map — the real one, verbatim.
 The landing page is the ACCM's ten big ideas. Beneath them sit the map's 21 nodes with their
 26 dependency edges (each admitted one at a time under a removal test), and beneath those the
-ACCM's own four-level hierarchy: 69 enduring understandings, 141 subdisciplinary articulations,
+ACCM's own four-level hierarchy: 69 enduring understandings, 140 subdisciplinary articulations,
 263 content details — every one reproduced byte-for-byte from the published ACS documents
 (general-chemistry map as the placement canon; the physical, organic and inorganic maps
 available as verbatim reference behind a toggle).
@@ -17,7 +17,7 @@ differently, the phrasings are listed together at that position, each with its b
 
 ## The numbers
 
-- 10 anchoring concepts · 69 enduring understandings · 141 articulations · 263 content details
+- 10 anchoring concepts · 69 enduring understandings · 140 articulations · 263 content details
 - 21 nodes · 26 gated dependencies (unchanged from V13; the ACCM layer sits above and below them, never through them)
 - 1,237 syllabus statements placed per statement at L2/L3/L4, with "no deeper" and
   "belongs nowhere" as legal verdicts; unplaced statements stay visible — a gap you can point at
