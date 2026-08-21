@@ -1,6 +1,6 @@
 {
   "command": "python3 redact_v15.py && python3 assemble_v15_view.py && python3 build_web_bundle.py && python3 redaction_lint.py",
-  "utc": "2026-08-20T11:50:02Z",
+  "utc": "2026-08-21T08:56:40Z",
   "atlas_version": 15,
   "files": [
     {
@@ -10,8 +10,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 1242,
-      "sha256": "cf2fcb985fb6199a74aac98398f4781569d8146285f42b892292e7618fe93267"
+      "bytes": 1428,
+      "sha256": "c1282a7ff68d51899d61170cffaa341b253c5ffc3a64a5c2daa82674da5410f4"
     },
     {
       "path": "analytics.html",
