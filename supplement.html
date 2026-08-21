@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<link rel="icon" href="favicon.svg">
+<title>Supplement overlay · Chemistry module</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{
+  --bg:#f6f7f6; --card:#fff; --ink:#14181a; --mut:#5c6663; --line:#dfe3e0; --chip:#eceeec;
+  --acc:#175d55; --shadow:0 10px 30px rgba(10,25,20,.13);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#101413; --card:#171d1b; --ink:#e8ecea; --mut:#94a09b; --line:#242c29; --chip:#1e2523;
+  --acc:#4cb3a2; --shadow:0 10px 30px rgba(0,0,0,.5);
+}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:15px/1.55 ui-sans-serif,system-ui,"Segoe UI",Roboto,sans-serif}
+a{color:var(--acc)}
+#site-nav{display:flex;gap:14px;flex-wrap:wrap;max-width:1240px;margin:0 auto;
+  padding:12px 22px 0;font-size:12.5px}
+#site-nav a{color:var(--acc);text-decoration:none}
+#site-nav a[aria-current="page"]{color:var(--ink);font-weight:650}
+header,main,footer{max-width:1240px;margin:0 auto;padding:8px 22px}
+header h1{margin:8px 0 2px;font-size:21px}
+.sub{color:var(--mut);font-size:13px;margin:0 0 12px}
+.banner{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0 14px}
+.stat{background:var(--chip);border:1px solid var(--line);border-radius:8px;
+  padding:3px 9px;font-size:12.3px;color:var(--mut)}
+.stat b{color:var(--ink);font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;
+  padding:14px 16px;margin:0 0 12px;box-shadow:var(--shadow)}
+label{display:block;font-size:12px;color:var(--mut);margin:6px 0 2px}
+input,select,textarea,button{font:inherit}
+input,select,textarea{width:100%;max-width:420px;padding:6px 8px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--ink)}
+button{font-size:13px;padding:6px 12px;border-radius:8px;border:1px solid var(--line);
+  background:var(--acc);color:#fff;cursor:pointer}
+button.secondary{background:var(--card);color:var(--ink)}
+.row{display:flex;flex-wrap:wrap;gap:12px;align-items:end}
+.row > div{flex:1;min-width:160px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--mut);font-weight:600;font-size:11.5px;letter-spacing:.02em}
+.muted{color:var(--mut);font-size:12.5px}
+.stem{white-space:pre-wrap}
+.opts{margin:6px 0 0;padding:0;list-style:none}
+.opts li{padding:3px 0}
+.tag{display:inline-block;font-size:10.5px;font-weight:600;border:1px solid var(--line);
+  border-radius:5px;padding:0 6px;color:var(--mut);margin-right:4px}
+pre{background:var(--chip);border:1px solid var(--line);border-radius:8px;
+  padding:10px;overflow:auto;font-size:12px}
+.chart{margin:8px 0 18px}
+.bar-row{display:flex;align-items:center;gap:8px;margin:3px 0;font-size:12.5px}
+.bar-lab{flex:0 0 150px;color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar-track{flex:1;height:12px;background:var(--chip);border-radius:6px;overflow:hidden}
+.bar-fill{height:100%;background:var(--acc)}
+.bar-n{flex:0 0 48px;text-align:right;font-variant-numeric:tabular-nums}
+footer{color:var(--mut);font-size:12.3px;margin:24px auto 40px}
+.item{border-top:1px solid var(--line);padding:10px 0}
+</style>
+<body>
+<nav id="site-nav"><a href="index.html">Atlas</a> <a href="questions.html">Questions</a> <a href="quiz.html">Quiz</a> <a href="analytics.html">Analytics</a> <a href="supplement.html" aria-current="page">Supplement</a> <a href="id_grammar.html">ID grammar</a></nav>
+
+<header>
+  <h1>Supplement overlay</h1>
+  <p class="sub">Evidence types, ACCM addresses, qualified node ids, served statement ids,
+    task primitives. Misconception and student-difficulty verbatim/statement fields are
+    dropped. No mastery-facet prose.</p>
+  <div class="banner" id="banner"></div>
+</header>
+<main>
+  <div class="card">
+    <div class="row">
+      <div><label for="typ">Evidence type</label>
+        <select id="typ"><option value="">all</option></select></div>
+      <div><label for="node">Node</label>
+        <select id="node"><option value="">all</option>
+          <option value="UNBOUND">UNBOUND</option></select></div>
+      <div><label for="q">item_id / address</label><input id="q" type="search"></div>
+    </div>
+    <p class="muted" id="meta"></p>
+  </div>
+  <div id="list"></div>
+</main>
+
+<footer>Public chemistry module · V15 projection · misconception and mastery-facet prose withheld · static, no external fetches.</footer>
+
+<script>
+const STATE={items:[]};
+function render(){
+  const typ=document.getElementById("typ").value;
+  const node=document.getElementById("node").value;
+  const q=document.getElementById("q").value.trim().toLowerCase();
+  const hits=STATE.items.filter(it=>{
+    if(typ && it.evidence_type!==typ) return false;
+    if(node==="UNBOUND" && !it.unbound && it.node_id) return false;
+    if(node && node!=="UNBOUND" && it.node_id!==node) return false;
+    if(q){
+      const blob=(it.item_id+" "+(it.accm_address||"")+" "+(it.node_id||"")).toLowerCase();
+      if(!blob.includes(q)) return false;
+    }
+    return true;
+  });
+  document.getElementById("meta").textContent=hits.length+" shown";
+  const box=document.getElementById("list"); box.innerHTML="";
+  hits.slice(0,250).forEach(it=>{
+    const d=document.createElement("div"); d.className="item card";
+    const h=document.createElement("div");
+    [it.evidence_type, it.node_id||"UNBOUND", it.accm_address||"no address",
+     it.primary_task_primitive||""].forEach(t=>{
+      if(!t) return;
+      const s=document.createElement("span"); s.className="tag"; s.textContent=t; h.appendChild(s);
+    });
+    d.appendChild(h);
+    const id=document.createElement("p"); id.className="muted"; id.textContent=it.item_id; d.appendChild(id);
+    if(it.evidence_statement){
+      const p=document.createElement("p"); p.textContent=it.evidence_statement; d.appendChild(p);
+    }
+    const serves=(it.serves_statement_ids||[]).length;
+    const mx=(it.mx_refs||[]).length;
+    const meta=document.createElement("p"); meta.className="muted";
+    meta.textContent="serves_statement_ids: "+serves+" · mx_refs (ids only): "+mx+
+      " · edge_ids: "+(it.edge_ids||[]).join(", ");
+    d.appendChild(meta);
+    box.appendChild(d);
+  });
+}
+fetch("data/supplement_public.json").then(r=>r.json()).then(items=>{
+  STATE.items=items;
+  const types=[...new Set(items.map(x=>x.evidence_type).filter(Boolean))].sort();
+  const nodes=[...new Set(items.map(x=>x.node_id).filter(Boolean))].sort();
+  const t=document.getElementById("typ"), n=document.getElementById("node");
+  types.forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;t.appendChild(o);});
+  nodes.forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;n.appendChild(o);});
+  const B=document.getElementById("banner");
+  const add=(h,t2)=>{const s=document.createElement("span");s.className="stat";
+    const b=document.createElement("b");b.textContent=h;s.appendChild(b);
+    s.appendChild(document.createTextNode(" "+t2));B.appendChild(s);};
+  add(String(items.length),"items");
+  add(String(items.filter(x=>x.unbound||!x.node_id).length),"UNBOUND");
+  add(String(types.length),"evidence types");
+  ["typ","node","q"].forEach(id=>document.getElementById(id).addEventListener("input", render));
+  render();
+});
+</script>
+
+</body>
+</html>

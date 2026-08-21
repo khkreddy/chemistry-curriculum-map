@@ -1,0 +1,80 @@
+{
+  "command": "python3 redact_v15.py && python3 assemble_v15_view.py && python3 build_web_bundle.py && python3 redaction_lint.py",
+  "utc": "2026-08-20T11:50:02Z",
+  "atlas_version": 15,
+  "files": [
+    {
+      "path": ".nojekyll",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1242,
+      "sha256": "cf2fcb985fb6199a74aac98398f4781569d8146285f42b892292e7618fe93267"
+    },
+    {
+      "path": "analytics.html",
+      "bytes": 7613,
+      "sha256": "9212bb73dcdcd11e6f56c66482350c3490019e9638421c0b87bad883cf116369"
+    },
+    {
+      "path": "data/counts.json",
+      "bytes": 4258,
+      "sha256": "fc9dee91be9903b767bfd27e836a6f2f79f6be5f6d0f84c8f1767f0f3bf0e706"
+    },
+    {
+      "path": "data/questions.json",
+      "bytes": 496431,
+      "sha256": "b407485160143e85ac784c592905e302a2422675997dcb6bd12c67cd89b366fd"
+    },
+    {
+      "path": "data/supplement_public.json",
+      "bytes": 1067571,
+      "sha256": "d380ee0c35c127c551271c2f423ec0e735a37fe47a5f5066a28cb20e8303cada"
+    },
+    {
+      "path": "favicon.svg",
+      "bytes": 338,
+      "sha256": "7a1dc927e216e60b92f436c1cdb67e0bcf1131186f3acb45341d53d06c3b8b63"
+    },
+    {
+      "path": "id_grammar.html",
+      "bytes": 6247,
+      "sha256": "b1dc139abf8be08e1056e801a7b801260c017bff5bf19bb406e50a615480a0d2"
+    },
+    {
+      "path": "id_grammar.md",
+      "bytes": 7544,
+      "sha256": "e8834316c0f613c8609a110c3a0819b1750d5821823c0331dfcda345d2ccfde6"
+    },
+    {
+      "path": "index.html",
+      "bytes": 732828,
+      "sha256": "0f34b01c9efa990dd112ccd23083de4db101531b24bbdeb184a6c51a39c3a5f3"
+    },
+    {
+      "path": "questions.html",
+      "bytes": 8061,
+      "sha256": "40d9e0321b952fad251de2f22530c51c12e311763a3015deb534106b1dd7d166"
+    },
+    {
+      "path": "quiz.html",
+      "bytes": 9208,
+      "sha256": "fe5c04f20fdfd9a2de4a559a36b549152b617b0ec759050df5a2b82dcfaadda9"
+    },
+    {
+      "path": "supplement.html",
+      "bytes": 7408,
+      "sha256": "d6aae7388e582e565c58878f0c2e2fb30b893411eb69323d33c853fb85f28b4e"
+    }
+  ],
+  "counts": {
+    "questions": 803,
+    "supplement": 1640,
+    "statements_placed": 1186,
+    "nowhere": 47,
+    "transit": 4,
+    "mx": 3159
+  }
+}

@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<link rel="icon" href="favicon.svg">
+<title>Quiz assembler · Chemistry module</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{
+  --bg:#f6f7f6; --card:#fff; --ink:#14181a; --mut:#5c6663; --line:#dfe3e0; --chip:#eceeec;
+  --acc:#175d55; --shadow:0 10px 30px rgba(10,25,20,.13);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#101413; --card:#171d1b; --ink:#e8ecea; --mut:#94a09b; --line:#242c29; --chip:#1e2523;
+  --acc:#4cb3a2; --shadow:0 10px 30px rgba(0,0,0,.5);
+}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:15px/1.55 ui-sans-serif,system-ui,"Segoe UI",Roboto,sans-serif}
+a{color:var(--acc)}
+#site-nav{display:flex;gap:14px;flex-wrap:wrap;max-width:1240px;margin:0 auto;
+  padding:12px 22px 0;font-size:12.5px}
+#site-nav a{color:var(--acc);text-decoration:none}
+#site-nav a[aria-current="page"]{color:var(--ink);font-weight:650}
+header,main,footer{max-width:1240px;margin:0 auto;padding:8px 22px}
+header h1{margin:8px 0 2px;font-size:21px}
+.sub{color:var(--mut);font-size:13px;margin:0 0 12px}
+.banner{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0 14px}
+.stat{background:var(--chip);border:1px solid var(--line);border-radius:8px;
+  padding:3px 9px;font-size:12.3px;color:var(--mut)}
+.stat b{color:var(--ink);font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;
+  padding:14px 16px;margin:0 0 12px;box-shadow:var(--shadow)}
+label{display:block;font-size:12px;color:var(--mut);margin:6px 0 2px}
+input,select,textarea,button{font:inherit}
+input,select,textarea{width:100%;max-width:420px;padding:6px 8px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--ink)}
+button{font-size:13px;padding:6px 12px;border-radius:8px;border:1px solid var(--line);
+  background:var(--acc);color:#fff;cursor:pointer}
+button.secondary{background:var(--card);color:var(--ink)}
+.row{display:flex;flex-wrap:wrap;gap:12px;align-items:end}
+.row > div{flex:1;min-width:160px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--mut);font-weight:600;font-size:11.5px;letter-spacing:.02em}
+.muted{color:var(--mut);font-size:12.5px}
+.stem{white-space:pre-wrap}
+.opts{margin:6px 0 0;padding:0;list-style:none}
+.opts li{padding:3px 0}
+.tag{display:inline-block;font-size:10.5px;font-weight:600;border:1px solid var(--line);
+  border-radius:5px;padding:0 6px;color:var(--mut);margin-right:4px}
+pre{background:var(--chip);border:1px solid var(--line);border-radius:8px;
+  padding:10px;overflow:auto;font-size:12px}
+.chart{margin:8px 0 18px}
+.bar-row{display:flex;align-items:center;gap:8px;margin:3px 0;font-size:12.5px}
+.bar-lab{flex:0 0 150px;color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar-track{flex:1;height:12px;background:var(--chip);border-radius:6px;overflow:hidden}
+.bar-fill{height:100%;background:var(--acc)}
+.bar-n{flex:0 0 48px;text-align:right;font-variant-numeric:tabular-nums}
+footer{color:var(--mut);font-size:12.3px;margin:24px auto 40px}
+.item{border-top:1px solid var(--line);padding:10px 0}
+</style>
+<body>
+<nav id="site-nav"><a href="index.html">Atlas</a> <a href="questions.html">Questions</a> <a href="quiz.html" aria-current="page">Quiz</a> <a href="analytics.html">Analytics</a> <a href="supplement.html">Supplement</a> <a href="id_grammar.html">ID grammar</a></nav>
+
+<header>
+  <h1>Quiz assembler</h1>
+  <p class="sub">Deterministic retrieval over the public question file. No model calls.
+    Given the same query object, two runs are byte-identical. PRNG: mulberry32 on an
+    unsigned 32-bit seed; pool sorted by item_uid before shuffle.</p>
+</header>
+<main>
+  <div class="card">
+    <div class="row">
+      <div><label for="node">Node id (qualified, e.g. C1/H-MOLE)</label>
+        <input id="node" placeholder="leave empty — CMS items are UNBOUND"></div>
+      <div><label for="board">Board</label>
+        <select id="board"><option value="">any</option></select></div>
+      <div><label for="fmt">Format</label>
+        <select id="fmt"><option value="">any</option></select></div>
+      <div><label for="n">N</label><input id="n" type="number" value="10" min="1" max="50"></div>
+      <div><label for="seed">Seed (uint32)</label><input id="seed" type="number" value="1" min="0"></div>
+    </div>
+    <p>
+      <button id="go" type="button">Assemble</button>
+      <button id="twice" class="secondary" type="button">Assemble twice and compare</button>
+    </p>
+    <p class="muted" id="status">UNBOUND node members are legal. A node filter with no CMS bindings yields an empty pool.</p>
+  </div>
+  <pre id="query"></pre>
+  <div id="out"></div>
+</main>
+
+<footer>Public chemistry module · V15 projection · misconception and mastery-facet prose withheld · static, no external fetches.</footer>
+
+<script>
+/** Deterministic quiz assembly.
+ * Query: {node, board, format, n, seed}. Missing filters match anything.
+ * 1. Filter questions.json.
+ * 2. Sort remaining records by item_uid (UTF-16 code units, which matches Python
+ *    lexicographic order for these ASCII uids).
+ * 3. Shuffle with mulberry32(seed) Fisher–Yates.
+ * 4. Take the first n records.
+ * Canonical payload keys, in order: query, item_uids, items.
+ * Byte identity is JSON.stringify of that payload.
+ */
+function mulberry32(a){
+  return function(){
+    a|=0; a=a+0x6D2B79F5|0;
+    let t=Math.imul(a^a>>>15,1|a);
+    t=t+Math.imul(t^t>>>7,61|t)^t;
+    return ((t^t>>>14)>>>0)/4294967296;
+  };
+}
+function shuffle(arr, seed){
+  const rng=mulberry32(seed>>>0);
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(rng()*(i+1));
+    const t=a[i]; a[i]=a[j]; a[j]=t;
+  }
+  return a;
+}
+function canonical(obj){ return JSON.stringify(obj); }
+function assemble(items, query){
+  const node=(query.node||"").trim();
+  const board=(query.board||"").trim();
+  const format=(query.format||"").trim();
+  const n=Math.max(1, Math.min(50, Number(query.n)||10));
+  const seed=(Number(query.seed)||0)>>>0;
+  let pool=items.filter(it=>{
+    if(node && !(it.node_ids||[]).includes(node)) return false;
+    if(board && it.board!==board) return false;
+    if(format && it.format!==format) return false;
+    return true;
+  });
+  pool.sort((a,b)=>a.item_uid<b.item_uid?-1:a.item_uid>b.item_uid?1:0);
+  const shuffled=shuffle(pool, seed).slice(0,n);
+  const q={node:node||null, board:board||null, format:format||null, n:n, seed:seed};
+  return {
+    query:q,
+    item_uids: shuffled.map(x=>x.item_uid),
+    items: shuffled
+  };
+}
+const STATE={items:[]};
+function readQuery(){
+  return {
+    node: document.getElementById("node").value,
+    board: document.getElementById("board").value,
+    format: document.getElementById("fmt").value,
+    n: document.getElementById("n").value,
+    seed: document.getElementById("seed").value
+  };
+}
+function show(payload, note){
+  document.getElementById("query").textContent=canonical(payload.query);
+  document.getElementById("status").textContent=
+    (note?note+" · ":"")+payload.item_uids.length+" items · seed "+payload.query.seed;
+  const box=document.getElementById("out"); box.innerHTML="";
+  payload.items.forEach((it,i)=>{
+    const d=document.createElement("div"); d.className="item card";
+    const h=document.createElement("div");
+    h.textContent=(i+1)+". "+it.item_uid+" · "+(it.qualification||"");
+    d.appendChild(h);
+    const p=document.createElement("p"); p.className="stem"; p.textContent=it.stem; d.appendChild(p);
+    const ul=document.createElement("ul"); ul.className="opts";
+    Object.keys(it.options||{}).sort().forEach(k=>{
+      const li=document.createElement("li");
+      li.textContent=k+". "+it.options[k];
+      ul.appendChild(li);
+    });
+    d.appendChild(ul);
+    box.appendChild(d);
+  });
+  const pre=document.createElement("pre");
+  pre.textContent=canonical({query:payload.query, item_uids:payload.item_uids});
+  box.appendChild(pre);
+}
+fetch("data/questions.json").then(r=>r.json()).then(items=>{
+  STATE.items=items;
+  const boards=[...new Set(items.map(x=>x.board).filter(Boolean))].sort();
+  const fmts=[...new Set(items.map(x=>x.format).filter(Boolean))].sort();
+  const b=document.getElementById("board"), f=document.getElementById("fmt");
+  boards.forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;b.appendChild(o);});
+  fmts.forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;f.appendChild(o);});
+  document.getElementById("go").addEventListener("click",()=>{
+    show(assemble(STATE.items, readQuery()));
+  });
+  document.getElementById("twice").addEventListener("click",()=>{
+    const q=readQuery();
+    const a=canonical(assemble(STATE.items, q));
+    const b2=canonical(assemble(STATE.items, q));
+    const ok=a===b2;
+    document.getElementById("status").textContent=ok?
+      "PASS: two assemblies byte-identical ("+a.length+" chars)":
+      "FAIL: assemblies differ";
+    show(JSON.parse(a), ok?"byte-identical across two runs":"MISMATCH");
+  });
+});
+</script>
+
+</body>
+</html>

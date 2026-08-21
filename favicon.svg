@@ -1,15 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Chemistry map icon">
-  <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#0ea5e9"/>
-      <stop offset="1" stop-color="#8b5cf6"/>
-    </linearGradient>
-  </defs>
-  <rect width="64" height="64" rx="14" fill="#0b1220"/>
-  <path d="M17 19h12M35 19h12M23 19v12m18-12v12M23 37v8m18-8v8M23 37h18" fill="none" stroke="url(#g)" stroke-width="4" stroke-linecap="round"/>
-  <circle cx="17" cy="19" r="5" fill="#f59e0b"/>
-  <circle cx="47" cy="19" r="5" fill="#0ea5e9"/>
-  <circle cx="23" cy="37" r="5" fill="#8b5cf6"/>
-  <circle cx="41" cy="37" r="5" fill="#10b981"/>
-  <circle cx="32" cy="49" r="5" fill="#f8fafc"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+<rect width="32" height="32" rx="6" fill="#175d55"/>
+<circle cx="16" cy="12" r="4" fill="#fff"/>
+<circle cx="10" cy="20" r="3" fill="#fff"/>
+<circle cx="22" cy="20" r="3" fill="#fff"/>
+<path d="M16 16 L10 20 M16 16 L22 20" stroke="#fff" stroke-width="1.6" fill="none"/>
 </svg>
